@@ -1,6 +1,10 @@
-## Plutus Pioneer Program | 3P C3
+### Plutus Pioneer Program | 3P C3
 
-# Week #1
+https://cabal.readthedocs.io/en/latest/getting-started.html
+
+https://www.cis.upenn.edu/~cis194/spring13/lectures.html
+
+#### Week #1
 
 Enter a nix-shell.
 Build the English Auction contract with cabal build (you may need to run cabal update first).
