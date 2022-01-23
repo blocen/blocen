@@ -14,6 +14,12 @@ Start the Playground client (in another nix-shell) with npm start.
 Copy-paste the auction contract into the Playground editor, do not forget to remove the module header.
 Compile.
 
+#### Week #2
+
+a. Fix and complete the code in the [Homework1](code/week02/src/Week02/Homework1.hs) module.
+
+b. Fix and complete the code in the [Homework2](code/week02/src/Week02/Homework2.hs) module.
+
 #### Additional Resources
 
 - [The Plutus repository](https://github.com/input-output-hk/plutus)
