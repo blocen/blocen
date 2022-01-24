@@ -33,3 +33,45 @@ import           Text.Printf         (printf)
 {-# INLINABLE mkValidator #-}
 mkValidator :: BuiltinData -> BuiltinData -> BuiltinData -> ()
 mkValidator _ _ _ = ()
+
+validator :: Validator
+validator = mkValidatorScript $$(PlutusTx.compile [|| mkValidator ||])
+
+valHash :: Ledger.ValidatorHash
+valHash = Scripts.validatorHash validator
+
+scrAddress :: Ledger.Address
+scrAddress = scriptAddress validator
+
+type GiftSchema =
+            Endpoint "give" Integer
+        .\/ Endpoint "grab" ()
+
+give :: AsContractError e => Integer -> Contract w s e ()
+give amount = do
+    let tx = mustPayToOtherScript valHash (Datum $ Builtins.mkI 0) $ Ada.lovelaceValueOf amount
+    ledgerTx <- submitTx tx
+    void $ awaitTxConfirmed $ getCardanoTxId ledgerTx
+    logInfo @String $ printf "made a gift of %d lovelace" amount
+
+grab :: forall w s e. AsContractError e => Contract w s e ()
+grab = do
+    utxos <- utxosAt scrAddress
+    let orefs   = fst <$> Map.toList utxos
+        lookups = Constraints.unspentOutputs utxos      <>
+                  Constraints.otherScript validator
+        tx :: TxConstraints Void Void
+        tx      = mconcat [mustSpendScriptOutput oref $ Redeemer $ Builtins.mkI 17 | oref <- orefs]
+    ledgerTx <- submitTxConstraintsWith @Void lookups tx
+    void $ awaitTxConfirmed $ getCardanoTxId ledgerTx
+    logInfo @String $ "collected gifts"
+
+endpoints :: Contract () GiftSchema Text ()
+endpoints = awaitPromise (give' `select` grab') >> endpoints
+  where
+    give' = endpoint @"give" give
+    grab' = endpoint @"grab" $ const grab
+
+mkSchemaDefinitions ''GiftSchema
+
+mkKnownCurrencies []
