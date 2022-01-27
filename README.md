@@ -20,6 +20,16 @@ a. Fix and complete the code in the [Homework1](code/week02/src/Week02/Homework1
 
 b. Fix and complete the code in the [Homework2](code/week02/src/Week02/Homework2.hs) module.
 
+#### Some Plutus Modules
+
+- `Ledger.Scripts`, contains functions related to untyped Plutus scripts.
+- `Ledger.Typed.Scripts`, contains functions related to typed Plutus scripts.
+- `Plutus.V1.Ledger.Interval`, contains the definition of intervals and functions for working with them.
+- `Plutus.V1.Ledger.Time`, contains time-related types and functions.
+- `PlutusTx`, contains important types like `Data` and `BuiltinData`.
+- `PlutusTx.IsData.Class`, contains the `ToData` and `FromData` classes and related functions.
+- `Wallet.Emulator`, contains types and functions for dealing with wallets.
+
 #### Additional Resources
 
 - [The Plutus repository](https://github.com/input-output-hk/plutus)
