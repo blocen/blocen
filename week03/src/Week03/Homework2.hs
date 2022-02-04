@@ -37,19 +37,13 @@ import           Text.Printf          (printf)
 
 {-# INLINABLE mkValidator #-}
 mkValidator :: PaymentPubKeyHash -> POSIXTime -> () -> ScriptContext -> Bool
-mkValidator pkh dat _ ctx = 
-    traceIfFalse "beneficiary's signature missing" signedByBeneficiary &&
-    traceIfFalse "deadline not reached" deadlineReached
-    
-    where
-        info :: TxInfo
-        info = scriptContextTxInfo ctx
-
-        signedByBeneficiary :: Bool
-        signedByBeneficiary = txSignedBy info $ unPaymentPubKeyHash $ pkh
-
-        deadlineReached :: Bool
-        deadlineReached = contains (from $ dat) $ txInfoValidRange info
+mkValidator VestingDatum{beneficiary1, beneficiary2, deadline} _ ScriptContext{scriptContextTxInfo=txInfo} =
+    let signedBy1  = txInfo `txSignedBy` unPaymentPubKeyHash beneficiary1
+        signedBy2  = txInfo `txSignedBy` unPaymentPubKeyHash beneficiary2
+        vr         = txInfoValidRange txInfo
+    in if deadline `Interval.after` vr
+        then traceIfFalse "tx unsigned by beneficiary 1" signedBy1
+        else traceIfFalse "tx unsigned by beneficiary 2" signedBy2
 
 data Vesting
 instance Scripts.ValidatorTypes Vesting where
