@@ -47,22 +47,27 @@ PlutusTx.unstableMakeIsData ''VestingDatum
 -- This should validate if either beneficiary1 has signed the transaction and the current slot is before or at the deadline
 -- or if beneficiary2 has signed the transaction and the deadline has passed.
 mkValidator :: VestingDatum -> () -> ScriptContext -> Bool
-mkValidator dat _ ctx = traceIfFalse "beneficiary 1 signature missing" signedByBeneficiary1 && 
-                        traceIfFalse "beneficiary 2 signature missing" signedByBeneficiary2 &&
-                        traceIfFalse "deadline not reached" deadlineReached
+-- mkValidator dat () ctx
+--     | (unPaymentPubKeyHash (beneficiary1 dat) `elem` sigs) && (to       (deadline dat) `contains` range) = True
+--     | (unPaymentPubKeyHash (beneficiary2 dat) `elem` sigs) && (from (1 + deadline dat) `contains` range) = True
+--     | otherwise                                                                                          = False
+--   where
+--     info :: TxInfo
+--     info = scriptContextTxInfo ctx
 
-    where
-        info :: TxInfo
-        info = scriptContextTxInfo ctx
+--     sigs :: [PubKeyHash]
+--     sigs = txInfoSignatories info
 
-        signedByBeneficiary1 :: Bool
-        signedByBeneficiary1 = txSignedBy info $ unPaymentPubKeyHash $ beneficiary1 dat
+--     range :: POSIXTimeRange
+--     range = txInfoValidRange info
 
-        signedByBeneficiary2 :: Bool
-        signedByBeneficiary2 = txSignedBy info $ unPaymentPubKeyHash $ beneficiary2 dat
-
-        deadlineReached :: Bool
-        deadlineReached = -- todo
+mkValidator VestingDatum{beneficiary1, beneficiary2, deadline} _ ScriptContext{scriptContextTxInfo=txInfo} =
+    let signedBy1  = txInfo `txSignedBy` unPaymentPubKeyHash beneficiary1
+        signedBy2  = txInfo `txSignedBy` unPaymentPubKeyHash beneficiary2
+        vr         = txInfoValidRange txInfo
+    in if deadline `Interval.after` vr
+        then traceIfFalse "tx unsigned by beneficiary 1" signedBy1
+        else traceIfFalse "tx unsigned by beneficiary 2" signedBy2
 
 data Vesting
 instance Scripts.ValidatorTypes Vesting where
