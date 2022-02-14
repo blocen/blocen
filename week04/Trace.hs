@@ -22,12 +22,13 @@ myTrace :: EmulatorTrace ()
 myTrace = do
     contractHandle1 <- activateContractWallet (knownWallet 1) endpoints
     contractHandle2 <- activateContractWallet (knownWallet 2) endpoints
-    callEndpoint @"give" h1 $ GiveParams
+    callEndpoint @"give" contractHandle1 $ GiveParams
         { gpBeneficiary = mockWalletPaymentPubKeyHash $ knownWallet 2
         , gpDeadline    = slotToBeginPOSIXTime def 20
         , gpAmount      = 10000000
         }
-    void $ waitUntilSlot 20
-    callEndpoint @"grab" h2 ()
+    -- void $ waitUntilSlot 20
+    void $ waitUntilSlot 10
+    callEndpoint @"grab" contractHandle2 ()
     s <- waitNSlots 2
     Extras.logInfo $ "reached " ++ show s
