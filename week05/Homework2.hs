@@ -47,7 +47,8 @@ mkPolicy oref () ctx = traceIfFalse "utxo not consumed" hasUTxO &&
 
         checkMintedAmount :: Bool
         checkMintedAmount = case flattenValue (txInfoMint info) of
-            --[(_, _, amt)] -> amt == 1
+            -- todo: why is that?
+            -- [(_, _, amt)] -> amt == 1
             [(cs, tn', amt)] -> cs  == ownCurrencySymbol ctx && tn' == tn && amt == 1
             _             -> False
   
