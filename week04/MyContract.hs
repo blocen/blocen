@@ -14,6 +14,14 @@ import Plutus.Contract            as Contract
 import Plutus.Trace.Emulator      as Emulator
 import Wallet.Emulator.Wallet
 
+
+import Ledger
+import Ledger.Value         as Value
+import Ledger.TimeSlot
+import Ledger.Ada                 as Ada
+import qualified Data.Map                   as Map
+import           Data.Default               (Default (..))
+
 myContract :: Contract () Empty Text ()
 myContract = do
   void $ Contract.throwError "BOOM!"
@@ -112,3 +120,22 @@ myTrace5 = do
 
 test5 :: IO ()
 test5 = runEmulatorTraceIO myTrace5
+
+
+
+-- custom emulator config
+-- test6 :: IO ()
+-- test = runEmulatorTraceIO' def emCfg myTrace
+--   where
+--     emCfg :: EmulatorConfig
+--     emCfg = EmulatorConfig $ Left $ Map.fromList [
+--                               (Wallet 1, v <> Value.singleton assetSymbol assetToken 1)
+--                             , (Wallet 2, v)
+--                             , (Wallet 3, v)]
+
+--     v :: Value
+--     v = Ada.lovelaceValueOf 100_000_000
+--     -- {-# LANGUAGE NumericUnderscores    #-}
+
+
+
