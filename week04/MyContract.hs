@@ -52,6 +52,11 @@ myTrace3 = do
 test3 :: IO ()
 test3 = runEmulatorTraceIO myTrace3
 
+-- The Writer parameter: w
+-- This type parameter can not be of any type but an instance of the type class Monoid. An example of data type which is an instance of this class is List. This parameter of the Contract monad is essential because it allows us to bring information back from the contract to the trace and also to the PAB, the Plutus Application Backend. We will be able to pass info back from the contract running in the wallet to the outside world.
+
+-- if you are asking how can it return an empty list, just remember that we imposed that the Writer parameter type had to be an instance of the type class Monoid. This type class implements three functions, the first one being mempty :: a which just gives you the empty object of your data type instance. In this case, our data type instance is a List, so the empty object is [].
+
 myContract4 :: Contract [Int] Empty Text ()
 myContract4 = do
     void $ Contract.waitNSlots 10
@@ -75,6 +80,35 @@ myTrace4 = do
     void $ Emulator.waitNSlots 10
     zs <- observableState h
     Extras.logInfo $ show zs
+    Extras.logInfo $ "my log info: " ++ show zs
 
 test4 :: IO ()
 test4 = runEmulatorTraceIO myTrace4
+
+myContract5 :: Contract [String] Empty Text ()
+myContract5 = do
+    void $ Contract.waitNSlots 10
+    tell ["first communication from contract"]
+    void $ Contract.waitNSlots 10
+    tell ["second com from contract"]
+    void $ Contract.waitNSlots 10
+
+myTrace5 :: EmulatorTrace ()
+myTrace5 = do
+    h <- activateContractWallet (knownWallet 1) myContract5
+
+    void $ Emulator.waitNSlots 5
+    xs <- observableState h
+    Extras.logInfo $ show xs
+
+    void $ Emulator.waitNSlots 10
+    ys <- observableState h
+    Extras.logInfo $ show ys
+
+    void $ Emulator.waitNSlots 10
+    zs <- observableState h
+    Extras.logInfo $ show zs
+    Extras.logInfo $ "my log info: " ++ show zs
+
+test5 :: IO ()
+test5 = runEmulatorTraceIO myTrace5
