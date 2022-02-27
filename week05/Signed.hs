@@ -43,7 +43,8 @@ policy pkh = mkMintingPolicyScript $
     PlutusTx.liftCode pkh
 
 curSymbol :: PaymentPubKeyHash -> CurrencySymbol
-curSymbol = scriptCurrencySymbol . policy
+curSymbol pkh = scriptCurrencySymbol $ policy pkh
+-- curSymbol = scriptCurrencySymbol . policy
 
 data MintParams = MintParams
     { mpTokenName :: !TokenName
