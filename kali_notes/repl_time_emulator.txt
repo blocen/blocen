@@ -1,0 +1,37 @@
+
+playground
+
+import Wallet.Emulator
+
+mockWalletPaymentPubKeyHash $ knownWallet 1
+a2c20c77887ace1cd986193e4e75babd8993cfd56995cd5cfce609c2
+
+Prelude Wallet.Emulator Week03.Deploy> mockWalletPaymentPubKeyHash $ knownWallet 2
+80a4f45b56b88d1139da23bc4c3c75ec6d32943c087f250b86193ca7
+
+Prelude Wallet.Emulator Week03.Deploy> mockWalletPaymentPubKeyHash $ knownWallet 3
+2e0ad60c3207248cecd47dbde3d752e0aad141d6b8f81ac2c6eca27c
+
+
+
+import Ledger.Time
+Prelude Wallet.Emulator Ledger.Time Week03.Deploy> import Data.Default 
+Prelude Wallet.Emulator Ledger.Time Data.Default Week03.Deploy> import Ledger.TimeSlot 
+Prelude Wallet.Emulator Ledger.Time Data.Default Ledger.TimeSlot Week03.Deploy> slotToBeginPOSIXTime def 10
+POSIXTime {getPOSIXTime = 1596059101000}
+Prelude Wallet.Emulator Ledger.Time Data.Default Ledger.TimeSlot Week03.Deploy> slotToBeginPOSIXTime def 20
+POSIXTime {getPOSIXTime = 1596059111000}
+
+
+
+
+
+Prelude Data.Default Ledger.TimeSlot Week01.EnglishAuction> import Data.Default
+
+Prelude Data.Default Ledger.TimeSlot Week01.EnglishAuction> import Ledger.TimeSlot 
+
+Prelude Data.Default Ledger.TimeSlot Week01.EnglishAuction> slotToEndPOSIXTime def 10
+
+POSIXTime {getPOSIXTime = 1596059101999}
+
+
