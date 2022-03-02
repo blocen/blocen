@@ -12,6 +12,8 @@
 {-# LANGUAGE NamedFieldPuns      #-}
 
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wall #-}
 
 -- A module starts with its export declarations of symbols declared in this file.
 -- module MyModule (myExport1, myExport2) where
@@ -294,5 +296,132 @@ mkKnownCurrencies []
 --     sort -- sort is in import Data.List
 --   . filter (<100)
 --   . map (*10)
+
+
+-- List Comprehensions
+
+-- Generators
+-- Let bindings 
+-- Guards
+-- [n*x | x <- [1,2,3,4,5], let n = 3, odd x]
+
+-- cartesian product
+-- [(x,y) | x <- [1,2,3], y <- [10,20,30]]
+
+-- [ e1.. ]	enumFrom e1
+-- [ e1,e2.. ]	enumFromThen e1 e2
+-- [ e1..e3 ]	enumFromTo e1 e3
+-- [ e1,e2..e3 ]	enumFromThenTo e1 e2 e3
+
+-- fizzbuzz :: [String]
+-- fizzbuzz = [fb x| x <- [1..100]]
+--     where fb y
+--         | y `mod` 15 == 0 = "FizzBuzz"
+--         | y `mod` 3  == 0 = "Fizz"
+--         | y `mod` 5  == 0 = "Buzz"
+--         | otherwise  = show y
+
+
+
+-- The undefined function is extremely practical for debugging or to accommodate writing incomplete programs.
+
+-- undefined :: a
+
+-- mean :: Num a => Vector a -> a
+-- mean nums = (total / count) where            -- Partially defined function
+--               total = undefined
+--               count = undefined
+
+-- addThreeNums :: Num a => a -> a -> a -> a
+-- addThreeNums n m j = undefined               -- No function body declared at all
+
+-- f :: a -> Complicated Type
+-- f = undefined                                -- Write tomorrow, typecheck today!
+--                                              -- Arbitrarily complicated types
+--                                              -- welcome!
+
+-- Haddock
+-- methods uses -- | to delineate the beginning of a comment:
+
+-- -- | Documentation for f
+-- f :: a -> a
+-- f = ...
+-- Multiline comments are also possible:
+
+-- -- | Multiline documentation for the function
+-- -- f with multiple arguments.
+-- fmap :: Functor f
+--      => (a -> b)  -- ^ function
+--      -> f a       -- ^ input
+--      -> f b       -- ^ output
+-- -- ^ is used to comment Constructors or Record fields:
+
+-- data T a b
+--   = A a -- ^ Documentation for A
+--   | B b -- ^ Documentation for B
+
+-- data R a b = R
+--   { f1 :: a -- ^ Documentation for the field f1
+--   , f2 :: b -- ^ Documentation for the field f2
+--   }
+-- Elements within a module (i.e. values, types, classes) can be hyperlinked by enclosing the identifier in single quotes:
+
+-- data T a b
+--   = A a -- ^ Documentation for 'A'
+--   | B b -- ^ Documentation for 'B'
+-- Modules themselves can be referenced by enclosing them in double quotes:
+
+-- -- | Here we use the "Data.Text" library and import
+-- -- the 'Data.Text.pack' function.
+-- haddock also allows the user to include blocks of code within the generated documentation. Two methods of demarcating the code blocks exist in haddock. For example, enclosing a code snippet in @ symbols marks it as a code block:
+
+-- -- | An example of a code block.
+-- --
+-- -- @
+-- --    f x = f (f x)
+-- -- @
+-- Similarly, it is possible to use bird tracks (>) in a comment line to set off a code block.
+
+-- -- | A similar code block example that uses bird tracks (i.e. '>')
+-- -- > f x = f (f x)
+-- Snippets of interactive shell sessions can also be included in haddock documentation. In order to denote the beginning of code intended to be run in a REPL, the >>> symbol is used:
+
+-- -- | Example of an interactive shell session embedded within documentation
+-- --
+-- -- >>> factorial 5
+-- -- 120
+-- Headers for specific blocks can be added by prefacing the comment in the module block with a *:
+
+-- module Foo (
+--   -- * My Header
+--   example1,
+--   example2
+-- )
+-- Sections can also be delineated by $ blocks that pertain to references in the body of the module:
+
+-- module Foo (
+--   -- $section1
+--   example1,
+--   example2
+-- )
+
+-- -- $section1
+-- -- Here is the documentation section that describes the symbols
+-- -- 'example1' and 'example2'.
+-- Links can be added with the following syntax:
+
+-- <url text>
+-- Images can also be included, so long as the path is either absolute or relative to the directory in which haddock is run.
+
+-- <<diagram.png title>>
+-- haddock options can also be specified with pragmas in the source, either at the module or project level.
+
+-- {-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
+-- Option	Description
+-- ignore-exports	Ignores the export list and includes all signatures in scope.
+-- not-home	Module will not be considered in the root documentation.
+-- show-extensions	Annotates the documentation with the language extensions used.
+-- hide	Forces the module to be hidden from Haddock.
+-- prune	Omits definitions with no annotations.
 
 
