@@ -75,7 +75,8 @@ PlutusTx.unstableMakeIsData ''GameRedeemer
 
 {-# INLINABLE lovelaces #-}
 lovelaces :: Value -> Integer
-lovelaces = Ada.getLovelace . Ada.fromValue
+-- lovelaces = Ada.getLovelace . Ada.fromValue
+lovelaces v = Ada.getLovelace $ Ada.fromValue v
 
 {-# INLINABLE gameDatum #-}
 gameDatum :: Maybe Datum -> Maybe GameDatum
